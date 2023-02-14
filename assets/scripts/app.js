@@ -32,15 +32,29 @@ function writeToLog(event, value, currentMonsterHealth, currentPlayerHealth) {
     finalPlayerHealth: currentPlayerHealth,
   };
 
-  if (event === logPlayerAttack) {
-    logEntries.target = 'Monster';
-  } else if (event === logPlayerStrongAttack) {
-    logEntries.target = 'Monster';
-  } else if (event === logMonsterAttack) {
-    logEntries.target = 'Player';
-  } else if (event === logPlayerHeal) {
-    logEntries.target = 'Player';
+  switch (event) {
+    case logPlayerAttack:
+    case logPlayerStrongAttack:
+      logEntries.target = 'Monster';
+      break;
+    case logMonsterAttack:
+    case logPlayerHeal:
+      logEntries.target = 'Player';
+      break;
+
+    default:
+      logEntries = {};
   }
+
+  // if (event === logPlayerAttack) {
+  //   logEntries.target = 'Monster';
+  // } else if (event === logPlayerStrongAttack) {
+  //   logEntries.target = 'Monster';
+  // } else if (event === logMonsterAttack) {
+  //   logEntries.target = 'Player';
+  // } else if (event === logPlayerHeal) {
+  //   logEntries.target = 'Player';
+  // }
   battleLog.push(logEntries);
 }
 
@@ -83,15 +97,16 @@ function endRound() {
   }
 }
 function attackMonster(mode) {
-  let maxDamage;
-  let playerAttack;
-  if (mode === attack) {
-    maxDamage = attackPlayerValue;
-    playerAttack = logPlayerAttack;
-  } else {
-    maxDamage = strongAttackValue;
-    playerAttack = logPlayerStrongAttack;
-  }
+  let maxDamage = mode === attack ? attackPlayerValue : strongAttackValue;
+  let playerAttack = mode === attack ? logPlayerAttack : logPlayerStrongAttack;
+
+  // if (mode === attack) {
+  //   maxDamage = attackPlayerValue;
+  //   playerAttack = logPlayerAttack;
+  // } else {
+  //   maxDamage = strongAttackValue;
+  //   playerAttack = logPlayerStrongAttack;
+  // }
 
   const monsterDamage = dealMonsterDamage(maxDamage);
   monsterHealth -= monsterDamage;
